@@ -1,0 +1,32 @@
+# Course materials — local only
+lectures/
+
+# Dataset — large binary files, keep locally
+# dataset/*.npz
+
+# Generated outputs
+outputs/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+.venv/
+venv/
+.env
+
+# IDE / OS
+.idea/
+.vscode/
+.DS_Store
+*.swp
+
+# Notebooks checkpoints
+.ipynb_checkpoints/
+
+# Report drafts (optional — remove if you want to track them)
+report/
+
+spec.md
