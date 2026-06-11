@@ -70,7 +70,7 @@ class Discriminator(nn.Module):
 
 class GANModel:
     def __init__(self, latent_dim=100, num_epochs=5, batch_size=32, lr=0.0002):
-        self.num_classes = 24
+        self.num_classes = 27
         self.latent_dim = latent_dim
         self.num_epochs = num_epochs
         self.batch_size = batch_size

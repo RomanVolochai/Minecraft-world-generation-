@@ -31,6 +31,9 @@ BLOCK_COLORS = {
     21: "#2c42c7", # bubble_column (water)
     22: "#5c4524", # podzol
     23: "#ede174", # gold_ore
+    24: "#5de8e5", # diamond_ore
+    25: "#e82727", # redstone_ore
+    26: "#25e838", # emerald_ore
 }
 
 def hex_to_rgb(hex_color):
@@ -45,7 +48,6 @@ def create_surface_colormap():
     return ListedColormap(colors)
 
 def visualize_surface(surface_map, output_path=None, show=False):
-    
     cmap = create_surface_colormap()
     
     fig, ax = plt.subplots(figsize=(10, 10))
@@ -56,6 +58,22 @@ def visualize_surface(surface_map, output_path=None, show=False):
     if output_path:
         plt.savefig(output_path, bbox_inches='tight', pad_inches=0, dpi=150)
         print(f"Saved visualization to {output_path}")
+    if show:
+        plt.show()
+    plt.close(fig)
+
+def visualize_heightmap(heightmap, output_path=None, show=False):
+    fig, ax = plt.subplots(figsize=(10, 10))
+    im = ax.imshow(heightmap, cmap='terrain', vmin=40, vmax=120, interpolation='bilinear')
+    ax.axis('off')
+    
+    cbar = fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
+    cbar.set_label('Elevation (Y)', rotation=270, labelpad=15)
+    
+    plt.tight_layout()
+    if output_path:
+        plt.savefig(output_path, bbox_inches='tight', pad_inches=0.1, dpi=150)
+        print(f"Saved heightmap visualization to {output_path}")
     if show:
         plt.show()
     plt.close(fig)
@@ -79,4 +97,6 @@ if __name__ == "__main__":
         out_path.parent.mkdir(parents=True, exist_ok=True)
         
         data = load_world_data(file_path)
-        visualize_surface(data['surface'], output_path=out_path)
+        surface = data['surface']
+        surface[surface == 6] = 4
+        visualize_surface(surface, output_path=out_path)

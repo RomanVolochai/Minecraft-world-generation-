@@ -7,7 +7,7 @@ from models.gmm_em import EMGMM
 class GMMModel:
     
     def __init__(self, n_components=10, pca_components=50):
-        self.num_classes = 24
+        self.num_classes = 27
         self.pca = PCA(n_components=pca_components, random_state=42)
         self.gmm = EMGMM(n_components=n_components)
         self.fitted = False
@@ -53,7 +53,15 @@ class GMMModel:
         
         x_recon = self.pca.inverse_transform(z)  # shape (1, 128*128*24)
         
-        x_recon_3d = x_recon.reshape((H, W, self.num_classes))
+        x_recon_3d_orig = x_recon.reshape((128, 128, self.num_classes))
+        
+        if H != 128 or W != 128:
+            print(f"Upscaling GMM output from 128x128 to {H}x{W}...")
+            y_indices = np.linspace(0, 127, H).astype(int)
+            x_indices = np.linspace(0, 127, W).astype(int)
+            x_recon_3d = x_recon_3d_orig[y_indices][:, x_indices]
+        else:
+            x_recon_3d = x_recon_3d_orig
         
         if return_probs:
             p = np.clip(x_recon_3d, 0, None)

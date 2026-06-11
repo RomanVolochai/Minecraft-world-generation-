@@ -5,7 +5,7 @@ from models.naive_bayes import NaiveBayesModel
 
 class MRFModel:
     
-    def __init__(self, num_classes=24, unary_weight=1.0, pairwise_weight=1.0, smoothing=1e-5):
+    def __init__(self, num_classes=27, unary_weight=1.0, pairwise_weight=1.0, smoothing=1e-5):
         self.num_classes = num_classes
         self.unary_weight = unary_weight
         self.pairwise_weight = pairwise_weight
@@ -17,8 +17,7 @@ class MRFModel:
         self.pairwise = np.zeros((num_classes, num_classes))
         self.log_pairwise = None
 
-    def fit(self, train_patches):
-        
+    def fit(self, train_patches): 
         print("Fitting MRF Model...")
         self.nb_model.fit(train_patches)
         
@@ -48,7 +47,6 @@ class MRFModel:
         self.log_pairwise = np.log(self.pairwise)
 
     def generate(self, size=(128, 128), sweeps=50, temperature=1.0, unary_probs=None):
-        
         if self.log_pairwise is None:
             raise ValueError("Model must be fitted before generation.")
             
@@ -108,6 +106,5 @@ class MRFModel:
                     
         return generated
 
-    def predict(self, patches):
-        
+    def predict(self, patches): 
         return self.nb_model.predict(patches)

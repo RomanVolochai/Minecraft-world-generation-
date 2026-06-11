@@ -3,7 +3,7 @@ from tqdm import tqdm
 
 class NaiveBayesModel:
     
-    def __init__(self, num_classes=24, smoothing=1.0):
+    def __init__(self, num_classes=27, smoothing=1.0):
         self.num_classes = num_classes
         self.smoothing = smoothing
         

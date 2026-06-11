@@ -2,10 +2,13 @@
 lectures/
 
 # Dataset — large binary files, keep locally
-# dataset/*.npz
+dataset/*.npz
 
 # Generated outputs
-# outputs/
+outputs/
+
+# Model checkpoints (GitHub limit is 100MB per file)
+checkpoints/
 
 # Python
 __pycache__/

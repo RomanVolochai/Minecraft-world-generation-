@@ -3,7 +3,6 @@ import numpy as np
 from pathlib import Path
 
 def load_world_data(filepath: str | Path) -> dict:
-    
     data = np.load(filepath)
     return {
         'surface': data['surface'],
@@ -12,12 +11,10 @@ def load_world_data(filepath: str | Path) -> dict:
     }
 
 def load_mapping(filepath: str | Path) -> dict:
-    
     with open(filepath, 'r') as f:
         return json.load(f)
 
 def get_inverse_mapping(mapping: dict) -> dict:
-    
     return {v: k for k, v in mapping.items()}
 
 if __name__ == "__main__":
