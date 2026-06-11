@@ -5,9 +5,6 @@ lectures/
 dataset/*.npz
 
 # Generated outputs
-outputs/
-
-# Model checkpoints (GitHub limit is 100MB per file)
 checkpoints/
 
 # Python
