@@ -72,7 +72,7 @@ def main():
     # 3. Heightmap Prediction: UNet with checkpoints/unet_height10.pth
     print("\n--- STEP 3: Heightmap Prediction (U-Net) ---")
     run_command([
-        "venv/bin/python", "src/generate.py",
+        "venv/bin/python", "surface/generate.py",
         "--model", "unet_height",
         "--load_model", "checkpoints/unet_height10.pth",
         "--input_surface", f"outputs/{name}.npy",

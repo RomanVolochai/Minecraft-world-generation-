@@ -1,19 +1,7 @@
 import numpy as np
 from pathlib import Path
-from .loader import load_mapping, load_world_data
+from .loader import load_world_data
 
-
-def clean_surface_blocks(surface, mapping):
-    
-    cleaned = surface.copy()
-    dirt_id = mapping.get("minecraft:dirt")
-    grass_id = mapping.get("minecraft:grass_block")
-    
-    if dirt_id is None or grass_id is None:
-        return cleaned
-        
-    cleaned[cleaned == dirt_id] = grass_id
-    return cleaned
 
 def extract_patches(world_map, patch_size=128):
     
@@ -50,7 +38,7 @@ def _resolve_split_counts(total_files, splits):
     return train_count, val_count, test_count
 
 
-def create_dataset_splits(dataset_dir, patch_size=128, splits=(0.8, 0.1, 0.1), clean_dirt=False):
+def create_dataset_splits(dataset_dir, patch_size=128, splits=(0.8, 0.1, 0.1), return_all=False):
     
     np.random.seed(42) # Deterministic split
     
@@ -66,17 +54,30 @@ def create_dataset_splits(dataset_dir, patch_size=128, splits=(0.8, 0.1, 0.1), c
     val_files = files[train_count:train_count+val_count]
     test_files = files[train_count+val_count:train_count+val_count+test_count]
     
-    mapping = load_mapping(Path(dataset_dir) / "blocks_mapping.json") if clean_dirt else None
-    
     def process_split(split_files):
         surface_patches = []
+        biome_patches = []
+        heightmap_patches = []
         for f in split_files:
             data = load_world_data(f)
-            surface = clean_surface_blocks(data['surface'], mapping) if clean_dirt else data['surface']
-            patches = extract_patches(surface, patch_size)
-            surface_patches.append(patches)
+            surface = data['surface']
+            surface[surface == 6] = 4
+            surface_patches.append(extract_patches(surface, patch_size))
+            if return_all:
+                biome_patches.append(extract_patches(data['biomes'], patch_size))
+                heightmap_patches.append(extract_patches(data['heightmap'], patch_size))
+        
         if not surface_patches:
+            if return_all:
+                return {'surface': np.array([]), 'biomes': np.array([]), 'heightmap': np.array([])}
             return np.array([])
+            
+        if return_all:
+            return {
+                'surface': np.concatenate(surface_patches, axis=0),
+                'biomes': np.concatenate(biome_patches, axis=0),
+                'heightmap': np.concatenate(heightmap_patches, axis=0)
+            }
         return np.concatenate(surface_patches, axis=0)
 
     print(f"Processing Train split ({len(train_files)} worlds)...")

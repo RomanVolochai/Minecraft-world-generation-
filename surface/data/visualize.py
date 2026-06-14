@@ -5,7 +5,6 @@ from pathlib import Path
 from matplotlib.colors import ListedColormap
 
 from .loader import load_mapping, load_world_data
-from .patches import clean_surface_blocks
 
 BLOCK_COLORS = {
     0:  "#ffffff", # air
@@ -64,11 +63,26 @@ def visualize_surface(surface_map, output_path=None, show=False):
         plt.show()
     plt.close(fig)
 
+def visualize_heightmap(heightmap, output_path=None, show=False):
+    fig, ax = plt.subplots(figsize=(10, 10))
+    im = ax.imshow(heightmap, cmap='terrain', vmin=40, vmax=120, interpolation='bilinear')
+    ax.axis('off')
+    
+    cbar = fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
+    cbar.set_label('Elevation (Y)', rotation=270, labelpad=15)
+    
+    plt.tight_layout()
+    if output_path:
+        plt.savefig(output_path, bbox_inches='tight', pad_inches=0.1, dpi=150)
+        print(f"Saved heightmap visualization to {output_path}")
+    if show:
+        plt.show()
+    plt.close(fig)
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Visualize a Minecraft world from dataset")
     parser.add_argument("--world", type=int, default=1, help="World ID to visualize (e.g. 1 for world_sample_1_...)")
     parser.add_argument("--output", type=str, default="outputs/real.png", help="Path to save the output PNG")
-    parser.add_argument("--clean_dirt", action="store_true", help="Replace dirt with grass_block before visualization")
     args = parser.parse_args()
     
     dataset_dir = Path(__file__).parent.parent.parent / "dataset"
@@ -85,7 +99,5 @@ if __name__ == "__main__":
         
         data = load_world_data(file_path)
         surface = data['surface']
-        if args.clean_dirt:
-            mapping = load_mapping(dataset_dir / "blocks_mapping.json")
-            surface = clean_surface_blocks(surface, mapping)
+        surface[surface == 6] = 4
         visualize_surface(surface, output_path=out_path)
