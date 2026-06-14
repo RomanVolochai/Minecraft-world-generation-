@@ -28,5 +28,4 @@ spec.md
 # Large files and datasets
 checkpoints/
 dataset/real_worlds_data/
-*.npz
 mc_server/
