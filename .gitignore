@@ -1,11 +1,6 @@
-# Course materials — local only
-lectures/
-
-# Dataset — large binary files, keep locally
-dataset/*.npz
-
 # Generated outputs
-checkpoints/
+outputs/
+worlds/
 
 # Python
 __pycache__/
@@ -30,3 +25,8 @@ venv/
 report/
 
 spec.md
+
+# Large files and datasets
+checkpoints/
+dataset/real_worlds_data/
+mc_server/

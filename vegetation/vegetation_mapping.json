@@ -1,0 +1,117 @@
+{
+    "source": "dataset_generator/surface_block_blacklist.json",
+    "excluded_blacklist_categories": [
+        "empty_blocks",
+        "badlands_clay_layers",
+        "generated_structure_leftovers"
+    ],
+    "categories": {
+        "ground_cover": {
+            "blacklist_category": "thin_ground_vegetation",
+            "blocks": [
+                "minecraft:grass",
+                "minecraft:tall_grass",
+                "minecraft:fern",
+                "minecraft:large_fern",
+                "minecraft:sugar_cane",
+                "minecraft:cactus",
+                "minecraft:potted_cactus",
+                "minecraft:dead_bush",
+                "minecraft:sweet_berry_bush"
+            ]
+        },
+        "flowers": {
+            "blacklist_category": "flowers",
+            "blocks": [
+                "minecraft:dandelion",
+                "minecraft:poppy",
+                "minecraft:blue_orchid",
+                "minecraft:allium",
+                "minecraft:azure_bluet",
+                "minecraft:red_tulip",
+                "minecraft:orange_tulip",
+                "minecraft:white_tulip",
+                "minecraft:pink_tulip",
+                "minecraft:oxeye_daisy",
+                "minecraft:cornflower",
+                "minecraft:lily_of_the_valley",
+                "minecraft:sunflower",
+                "minecraft:lilac",
+                "minecraft:rose_bush",
+                "minecraft:peony"
+            ]
+        },
+        "mushrooms": {
+            "blacklist_category": "mushrooms",
+            "blocks": [
+                "minecraft:brown_mushroom",
+                "minecraft:red_mushroom"
+            ]
+        },
+        "trees": {
+            "blacklist_category": "tree_canopy_and_trunks",
+            "parse_blocks": [
+                "minecraft:acacia_log",
+                "minecraft:birch_log",
+                "minecraft:dark_oak_log",
+                "minecraft:jungle_log",
+                "minecraft:oak_log",
+                "minecraft:spruce_log",
+                "minecraft:stripped_acacia_log",
+                "minecraft:stripped_birch_log",
+                "minecraft:stripped_dark_oak_log",
+                "minecraft:stripped_jungle_log",
+                "minecraft:stripped_oak_log",
+                "minecraft:stripped_spruce_log"
+            ]
+        }
+    },
+    "generatable_blocks": {
+        "minecraft:grass": 1,
+        "minecraft:tall_grass": 2,
+        "minecraft:fern": 3,
+        "minecraft:large_fern": 4,
+        "minecraft:sugar_cane": 5,
+        "minecraft:cactus": 6,
+        "minecraft:dead_bush": 7,
+        "minecraft:sweet_berry_bush": 8,
+        "minecraft:dandelion": 12,
+        "minecraft:poppy": 13,
+        "minecraft:blue_orchid": 14,
+        "minecraft:allium": 15,
+        "minecraft:azure_bluet": 16,
+        "minecraft:red_tulip": 17,
+        "minecraft:orange_tulip": 18,
+        "minecraft:white_tulip": 19,
+        "minecraft:pink_tulip": 20,
+        "minecraft:oxeye_daisy": 21,
+        "minecraft:cornflower": 22,
+        "minecraft:lily_of_the_valley": 23,
+        "minecraft:sunflower": 24,
+        "minecraft:lilac": 25,
+        "minecraft:rose_bush": 26,
+        "minecraft:peony": 27,
+        "minecraft:brown_mushroom": 44,
+        "minecraft:red_mushroom": 45,
+        "minecraft:oak_sapling": 46,
+        "minecraft:birch_sapling": 47,
+        "minecraft:spruce_sapling": 48,
+        "minecraft:jungle_sapling": 49,
+        "minecraft:acacia_sapling": 50,
+        "minecraft:dark_oak_sapling": 51
+    },
+    "tree_log_to_sapling": {
+        "minecraft:oak_log": "minecraft:oak_sapling",
+        "minecraft:stripped_oak_log": "minecraft:oak_sapling",
+        "minecraft:birch_log": "minecraft:birch_sapling",
+        "minecraft:stripped_birch_log": "minecraft:birch_sapling",
+        "minecraft:spruce_log": "minecraft:spruce_sapling",
+        "minecraft:stripped_spruce_log": "minecraft:spruce_sapling",
+        "minecraft:jungle_log": "minecraft:jungle_sapling",
+        "minecraft:stripped_jungle_log": "minecraft:jungle_sapling",
+        "minecraft:acacia_log": "minecraft:acacia_sapling",
+        "minecraft:stripped_acacia_log": "minecraft:acacia_sapling",
+        "minecraft:dark_oak_log": "minecraft:dark_oak_sapling",
+        "minecraft:stripped_dark_oak_log": "minecraft:dark_oak_sapling"
+    }
+}

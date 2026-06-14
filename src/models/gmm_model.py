@@ -6,23 +6,24 @@ from models.gmm_em import EMGMM
 
 class GMMModel:
     
-    def __init__(self, n_components=10, pca_components=50):
-        self.num_classes = 27
+    def __init__(self, n_components=10, pca_components=50, num_classes=27, max_samples=100):
+        self.num_classes = num_classes
         self.pca = PCA(n_components=pca_components, random_state=42)
         self.gmm = EMGMM(n_components=n_components)
         self.fitted = False
+        self.max_samples = max_samples
 
     def _to_one_hot(self, patches):
         
         N, H, W = patches.shape
-        one_hot = np.eye(self.num_classes)[patches]  # Shape: (N, H, W, num_classes)
+        one_hot = np.eye(self.num_classes, dtype=np.float32)[patches]  # Shape: (N, H, W, num_classes)
         return one_hot.reshape(N, H * W * self.num_classes)
         
     def fit(self, train_patches):
         
-        if train_patches.shape[0] > 1000:
+        if train_patches.shape[0] > self.max_samples:
             np.random.seed(42)
-            indices = np.random.choice(train_patches.shape[0], 1000, replace=False)
+            indices = np.random.choice(train_patches.shape[0], self.max_samples, replace=False)
             sub_patches = train_patches[indices]
         else:
             sub_patches = train_patches

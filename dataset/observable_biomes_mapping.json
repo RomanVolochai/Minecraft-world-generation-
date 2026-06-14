@@ -1,0 +1,142 @@
+{
+    "observable_biomes": {
+        "unknown": {
+            "id": 0,
+            "color": "#ffffff",
+            "biomes": [
+                "minecraft:air"
+            ]
+        },
+        "desert": {
+            "id": 1,
+            "color": "#f2d16b",
+            "biomes": [
+                "minecraft:desert",
+                "minecraft:desert_hills",
+                "minecraft:desert_lakes"
+            ]
+        },
+        "grassland": {
+            "id": 2,
+            "color": "#7ec850",
+            "biomes": [
+                "minecraft:plains",
+                "minecraft:sunflower_plains",
+                "minecraft:savanna",
+                "minecraft:savanna_plateau",
+                "minecraft:shattered_savanna",
+                "minecraft:shattered_savanna_plateau"
+            ]
+        },
+        "forest_like": {
+            "id": 3,
+            "color": "#2f8f3a",
+            "biomes": [
+                "minecraft:forest",
+                "minecraft:wooded_hills",
+                "minecraft:flower_forest",
+                "minecraft:birch_forest",
+                "minecraft:birch_forest_hills",
+                "minecraft:tall_birch_forest",
+                "minecraft:tall_birch_hills",
+                "minecraft:dark_forest",
+                "minecraft:dark_forest_hills",
+                "minecraft:taiga",
+                "minecraft:taiga_hills",
+                "minecraft:taiga_mountains",
+                "minecraft:giant_tree_taiga",
+                "minecraft:giant_tree_taiga_hills",
+                "minecraft:jungle",
+                "minecraft:jungle_hills",
+                "minecraft:jungle_edge",
+                "minecraft:modified_jungle",
+                "minecraft:bamboo_jungle",
+                "minecraft:bamboo_jungle_hills"
+            ]
+        },
+        "snowy": {
+            "id": 4,
+            "color": "#d6edf2",
+            "biomes": [
+                "minecraft:snowy_tundra",
+                "minecraft:snowy_mountains",
+                "minecraft:snowy_taiga",
+                "minecraft:snowy_taiga_hills"
+            ]
+        },
+        "snowy_beach": {
+            "id": 5,
+            "color": "#e8f1df",
+            "biomes": [
+                "minecraft:snowy_beach"
+            ]
+        },
+        "beach": {
+            "id": 6,
+            "color": "#efd982",
+            "biomes": [
+                "minecraft:beach"
+            ]
+        },
+        "river": {
+            "id": 7,
+            "color": "#2f6fd6",
+            "biomes": [
+                "minecraft:river"
+            ]
+        },
+        "frozen_river": {
+            "id": 8,
+            "color": "#89c6f0",
+            "biomes": [
+                "minecraft:frozen_river"
+            ]
+        },
+        "ocean": {
+            "id": 9,
+            "color": "#2f50c8",
+            "biomes": [
+                "minecraft:ocean",
+                "minecraft:deep_ocean",
+                "minecraft:cold_ocean",
+                "minecraft:deep_cold_ocean",
+                "minecraft:lukewarm_ocean",
+                "minecraft:warm_ocean",
+                "minecraft:deep_lukewarm_ocean"
+            ]
+        },
+        "frozen_ocean": {
+            "id": 10,
+            "color": "#8fc9f5",
+            "biomes": [
+                "minecraft:frozen_ocean",
+                "minecraft:deep_frozen_ocean"
+            ]
+        },
+        "wetland": {
+            "id": 11,
+            "color": "#4f7a3b",
+            "biomes": [
+                "minecraft:swamp",
+                "minecraft:swamp_hills"
+            ]
+        },
+        "mountains": {
+            "id": 12,
+            "color": "#8a8a8a",
+            "biomes": [
+                "minecraft:mountains",
+                "minecraft:wooded_mountains",
+                "minecraft:gravelly_mountains",
+                "minecraft:modified_gravelly_mountains"
+            ]
+        },
+        "stone_shore": {
+            "id": 13,
+            "color": "#9a9484",
+            "biomes": [
+                "minecraft:stone_shore"
+            ]
+        }
+    }
+}

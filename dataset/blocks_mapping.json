@@ -22,5 +22,8 @@
     "minecraft:blue_ice": 20,
     "minecraft:bubble_column": 21,
     "minecraft:podzol": 22,
-    "minecraft:gold_ore": 23
+    "minecraft:gold_ore": 23,
+    "minecraft:red_sand": 24,
+    "minecraft:mycelium": 25,
+    "minecraft:redstone_ore": 26
 }

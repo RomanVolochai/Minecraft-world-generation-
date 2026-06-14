@@ -52,5 +52,16 @@
     "minecraft:giant_tree_taiga": 50,
     "minecraft:tall_birch_hills": 51,
     "minecraft:bamboo_jungle": 52,
-    "minecraft:bamboo_jungle_hills": 53
+    "minecraft:bamboo_jungle_hills": 53,
+    "minecraft:giant_spruce_taiga_hills": 54,
+    "minecraft:giant_spruce_taiga": 55,
+    "minecraft:badlands": 56,
+    "minecraft:badlands_plateau": 57,
+    "minecraft:wooded_badlands_plateau": 58,
+    "minecraft:mushroom_field_shore": 59,
+    "minecraft:eroded_badlands": 60,
+    "minecraft:ice_spikes": 61,
+    "minecraft:modified_wooded_badlands_plateau": 62,
+    "minecraft:mushroom_fields": 63,
+    "minecraft:snowy_taiga_mountains": 64
 }

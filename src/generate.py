@@ -29,20 +29,35 @@ def main():
     parser.add_argument("--save_model", type=str, default=None, help="Path to save the trained model (e.g. weights/gan.pth)")
     parser.add_argument("--load_model", type=str, default=None, help="Path to load pre-trained model weights")
     parser.add_argument("--input_map", type=str, default=None, help="Path to a specific .npz map to analyze (for U-Net)")
+    parser.add_argument("--input_surface", type=str, default=None, help="Path to custom surface block grid (.npy)")
+    parser.add_argument("--input_biomes", type=str, default=None, help="Path to custom biome grid (.npy)")
     parser.add_argument("--continue_training", action="store_true", help="Continue training a loaded GAN model")
+    parser.add_argument("--max_samples", type=int, default=100, help="Maximum samples to use for training GMM (to avoid OOM)")
+    parser.add_argument("--no_smooth", dest="smooth_heightmap", action="store_false", help="Disable smoothing of the predicted heightmap")
+    parser.add_argument("--smooth_sigma", type=float, default=1.0, help="Sigma for gaussian filter smoothing")
+    parser.set_defaults(smooth_heightmap=True)
     args = parser.parse_args()
     
     dataset_dir = Path(__file__).parent.parent / "dataset"
-    print("Loading data for training...")
     
-    if args.model == "unet_height":
-        splits = create_dataset_splits(dataset_dir, patch_size=128, return_all=True)
-    elif args.model == "gan512":
-        splits = create_dataset_splits(dataset_dir, patch_size=512)
-        train_patches = splits['train']
+    # Check if we are doing inference-only with a loaded model on a specific map, in which case we don't need dataset splits
+    need_splits = True
+    if args.load_model and not args.continue_training:
+        if (args.input_surface and args.input_biomes) or args.input_map:
+            need_splits = False
+            
+    if need_splits:
+        print("Loading data for training...")
+        if args.model == "unet_height":
+            splits = create_dataset_splits(dataset_dir, patch_size=128, return_all=True)
+        elif args.model == "gan512":
+            splits = create_dataset_splits(dataset_dir, patch_size=512)
+            train_patches = splits['train']
+        else:
+            splits = create_dataset_splits(dataset_dir, patch_size=128)
+            train_patches = splits['train']
     else:
-        splits = create_dataset_splits(dataset_dir, patch_size=128)
-        train_patches = splits['train']
+        print("Skipping dataset loading (inference only)...")
     
     if args.model == "baseline":
         model = BaselineModel()
@@ -55,11 +70,11 @@ def main():
         model = MRFModel()
         model.fit(train_patches)
     elif args.model == "gmm":
-        model = GMMModel()
+        model = GMMModel(max_samples=args.max_samples)
         model.fit(train_patches)
     elif args.model == "ensemble":
         print("Training GMM...")
-        gmm = GMMModel()
+        gmm = GMMModel(max_samples=args.max_samples)
         gmm.fit(train_patches)
         print("Training MRF...")
         mrf = MRFModel()
@@ -100,18 +115,20 @@ def main():
                 model.save(args.save_model)
                 
     elif args.model == "unet_height":
-        train_data = splits['train']
+
         model = UNetHeightModel(num_epochs=args.epochs)
         if args.load_model:
             print(f"Loading U-Net from {args.load_model}...")
             model.load(args.load_model)
             if args.continue_training:
+                train_data = splits['train']
                 print(f"Continuing training for {args.epochs} epochs...")
                 model.fit(train_data['surface'], train_data['biomes'], train_data['heightmap'])
                 if args.save_model:
                     print(f"Saving updated U-Net to {args.save_model}...")
                     model.save(args.save_model)
         else:
+            train_data = splits['train']
             print("Training U-Net...")
             model.fit(train_data['surface'], train_data['biomes'], train_data['heightmap'])
             if args.save_model:
@@ -119,7 +136,22 @@ def main():
                 model.save(args.save_model)
                 
         # Generate on a test patch or specific input map
-        if args.input_map:
+        if args.input_surface and args.input_biomes:
+            print(f"Loading custom surface: {args.input_surface}")
+            print(f"Loading custom biomes: {args.input_biomes}")
+            surface_patch = np.load(args.input_surface)[np.newaxis, ...]
+            biome_raw = np.load(args.input_biomes)
+            
+            # If biomes grid is smaller (cell resolution), upscale it to match surface
+            if biome_raw.shape != surface_patch.shape[1:]:
+                h_scale = surface_patch.shape[1] // biome_raw.shape[0]
+                w_scale = surface_patch.shape[2] // biome_raw.shape[1]
+                print(f"Upscaling biome grid by factor of {h_scale}x{w_scale} to match surface resolution...")
+                biome_raw = np.repeat(np.repeat(biome_raw, h_scale, axis=0), w_scale, axis=1)
+                
+            biome_patch = biome_raw[np.newaxis, ...]
+            has_true = False
+        elif args.input_map:
             print(f"Loading specific map: {args.input_map}")
             from data.loader import load_world_data
             data = load_world_data(args.input_map)
@@ -140,6 +172,13 @@ def main():
         print("Generating heightmap...")
         pred_heightmap = model.generate(surface_patch, biome_patch)[0]
         
+        if args.smooth_heightmap:
+            print("Smoothing predicted heightmap to remove checkerboard artifacts and crevices...")
+            import scipy.ndimage as ndimage
+            # 1. Median filter (removes 1-pixel spikes/checkerboards and 1-block lines)
+            pred_heightmap = ndimage.median_filter(pred_heightmap, size=3)
+            # 2. Gaussian filter (smoothes blocky step boundaries)
+            pred_heightmap = ndimage.gaussian_filter(pred_heightmap, sigma=args.smooth_sigma)
         out_base = str(args.output).replace('.png', '')
         visualize_surface(surface_patch[0], output_path=f"{out_base}_surface.png")
         visualize_heightmap(pred_heightmap, output_path=f"{out_base}_heightmap_pred.png")
@@ -174,6 +213,10 @@ def main():
     out_path.parent.mkdir(parents=True, exist_ok=True)
     
     visualize_surface(generated_map, output_path=out_path)
+    
+    npy_path = out_path.with_suffix(".npy")
+    np.save(npy_path, generated_map)
+    print(f"Saved raw map matrix to {npy_path}")
     print("Done!")
 
 if __name__ == "__main__":
