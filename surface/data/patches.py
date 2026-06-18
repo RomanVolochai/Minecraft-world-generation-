@@ -3,20 +3,30 @@ from pathlib import Path
 from .loader import load_world_data
 
 
+def clean_surface_blocks(surface, block_mapping):
+    cleaned = surface.copy()
+    if block_mapping is not None:
+        dirt_id = block_mapping.get("minecraft:dirt", 6)
+        grass_id = block_mapping.get("minecraft:grass_block", 4)
+        cleaned[cleaned == dirt_id] = grass_id
+    else:
+        cleaned[cleaned == 6] = 4
+    return cleaned
+
+
 def extract_patches(world_map, patch_size=128):
-    
     h, w = world_map.shape
     patches = []
-    
+
     for y in range(0, h - patch_size + 1, patch_size):
         for x in range(0, w - patch_size + 1, patch_size):
-            patch = world_map[y:y+patch_size, x:x+patch_size]
+            patch = world_map[y:y + patch_size, x:x + patch_size]
             patches.append(patch)
-            
+
     return np.stack(patches)
 
+
 def _resolve_split_counts(total_files, splits):
-    
     if all(isinstance(value, float) for value in splits):
         train_ratio, val_ratio, test_ratio = splits
         ratio_sum = train_ratio + val_ratio + test_ratio
@@ -24,7 +34,7 @@ def _resolve_split_counts(total_files, splits):
         val_count = int(total_files * val_ratio / ratio_sum)
         test_count = total_files - train_count - val_count
         return train_count, val_count, test_count
-        
+
     train_count, val_count, test_count = splits
     requested = train_count + val_count + test_count
     if total_files < requested:
@@ -34,26 +44,25 @@ def _resolve_split_counts(total_files, splits):
         train_count = int(total_files * train_ratio)
         val_count = int(total_files * val_ratio)
         test_count = total_files - train_count - val_count
-        
+
     return train_count, val_count, test_count
 
 
 def create_dataset_splits(dataset_dir, patch_size=128, splits=(0.8, 0.1, 0.1), return_all=False):
-    
-    np.random.seed(42) # Deterministic split
-    
+    np.random.seed(42)  # Deterministic split
+
     files = list(Path(dataset_dir).glob("world_sample_*.npz"))
     files.sort(key=lambda p: p.name)
-    
+
     files = np.array(files)
     np.random.shuffle(files)
-    
+
     train_count, val_count, test_count = _resolve_split_counts(len(files), splits)
-    
+
     train_files = files[:train_count]
-    val_files = files[train_count:train_count+val_count]
-    test_files = files[train_count+val_count:train_count+val_count+test_count]
-    
+    val_files = files[train_count:train_count + val_count]
+    test_files = files[train_count + val_count:train_count + val_count + test_count]
+
     def process_split(split_files):
         surface_patches = []
         biome_patches = []
@@ -66,12 +75,12 @@ def create_dataset_splits(dataset_dir, patch_size=128, splits=(0.8, 0.1, 0.1), r
             if return_all:
                 biome_patches.append(extract_patches(data['biomes'], patch_size))
                 heightmap_patches.append(extract_patches(data['heightmap'], patch_size))
-        
+
         if not surface_patches:
             if return_all:
                 return {'surface': np.array([]), 'biomes': np.array([]), 'heightmap': np.array([])}
             return np.array([])
-            
+
         if return_all:
             return {
                 'surface': np.concatenate(surface_patches, axis=0),
@@ -86,17 +95,18 @@ def create_dataset_splits(dataset_dir, patch_size=128, splits=(0.8, 0.1, 0.1), r
     val_patches = process_split(val_files)
     print(f"Processing Test split ({len(test_files)} worlds)...")
     test_patches = process_split(test_files)
-    
+
     return {
         'train': train_patches,
         'val': val_patches,
         'test': test_patches
     }
 
+
 if __name__ == "__main__":
     dataset_dir = Path(__file__).parent.parent.parent / "dataset"
     splits = create_dataset_splits(dataset_dir, patch_size=128)
-    
+
     print(f"Train patches: {splits['train'].shape}")
     print(f"Val patches: {splits['val'].shape}")
     print(f"Test patches: {splits['test'].shape}")
