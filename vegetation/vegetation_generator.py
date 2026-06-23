@@ -220,7 +220,7 @@ def main():
             if world_3d[h+1, x, z] != "minecraft:air":
                 continue
                 
-            # Skip placing vegetation if the surface block is water, stone, or other rocky blocks
+            # Skip placing vegetation if the surface block is water, stone, other rocky blocks, snow, or ores
             surface_block = world_3d[h, x, z]
             if surface_block in {
                 5, "minecraft:water", "water",
@@ -229,7 +229,13 @@ def main():
                 9, "minecraft:diorite", "diorite",
                 13, "minecraft:andesite", "andesite",
                 2, "minecraft:sandstone", "sandstone",
-                8, "minecraft:gravel", "gravel"
+                8, "minecraft:gravel", "gravel",
+                16, "minecraft:snow", "snow",
+                19, "minecraft:snow_block", "snow_block",
+                10, "minecraft:iron_ore", "iron_ore",
+                11, "minecraft:coal_ore", "coal_ore",
+                23, "minecraft:gold_ore", "gold_ore",
+                26, "minecraft:redstone_ore", "redstone_ore"
             }:
                 continue
                 
@@ -239,8 +245,12 @@ def main():
                 continue
                 
             # If the surface block is sand, only allow sugar cane, dead bush, or cactus
-            if surface_block in {1, "minecraft:sand", "sand"}:
+            if surface_block in {1, "minecraft:sand", "sand", 24, "minecraft:red_sand", "red_sand"}:
                 if chosen_block not in {"minecraft:sugar_cane", "minecraft:dead_bush", "minecraft:cactus"}:
+                    continue
+            else:
+                # Cacti and dead bushes must only be placed on sand or red sand
+                if chosen_block in {"minecraft:cactus", "minecraft:dead_bush"}:
                     continue
                 
             if chosen_block == "minecraft:dark_oak_sapling":
