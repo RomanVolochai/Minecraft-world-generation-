@@ -26,6 +26,5 @@ spec.md
 /lectures
 
 # Large files and datasets
-checkpoints/
 dataset/real_worlds_data/
 mc_server/
